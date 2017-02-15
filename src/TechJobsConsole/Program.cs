@@ -67,7 +67,7 @@ namespace TechJobsConsole
                     }
                     else
                     {
-                        searchResults = JobData.findByKeyAndValue(columnChoice, searchTerm);
+                        searchResults = JobData.findByColumnAndValue(columnChoice, searchTerm);
                         printJobs(searchResults);
                     }
                 }
