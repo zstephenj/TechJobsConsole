@@ -69,8 +69,6 @@ namespace TechJobsConsole
                 return;
             }
 
-            // Assembly assembly = typeof(JobData).GetTypeInfo().Assembly;
-            // Stream resourceStream = assembly.GetManifestResourceStream();
             List<string[]> rows = new List<string[]>();
 
             using (StreamReader reader = File.OpenText("job_data.csv"))
@@ -98,7 +96,6 @@ namespace TechJobsConsole
                 {
                     rowDict.Add(headers[i], row[i]);
                 }
-
                 allJobs.Add(rowDict);
             }
 

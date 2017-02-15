@@ -8,10 +8,13 @@ namespace TechJobsConsole
         static void Main(string[] args)
         {
             // Create two Dictionary vars to hold info for menu and data
+
+            // Top-level menu options
             Dictionary<string, string> actionChoices = new Dictionary<string, string>();
             actionChoices.Add("search", "Search");
             actionChoices.Add("list", "List");
 
+            // Column options
             Dictionary<string, string> columnChoices = new Dictionary<string, string>();
             columnChoices.Add("core competency", "Skill");
             columnChoices.Add("employer", "Employer");
@@ -29,7 +32,7 @@ namespace TechJobsConsole
 
                 if (actionChoice.Equals("list"))
                 {
-                    string columnChoice = getUserSelection("Browse", columnChoices);
+                    string columnChoice = getUserSelection("List", columnChoices);
 
                     if (columnChoice.Equals("all"))
                     {
