@@ -1,12 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
   "buildOptions": {
-    "emitEntryPoint": true,
-    "embed": {
-      "include": [
-        "job_data.csv"
-      ]
-    }
+    "emitEntryPoint": true
   },
 
   "dependencies": {
