@@ -5,49 +5,51 @@ namespace TechJobsConsole
 {
     class Program
     {
-        private static string[] actionChoices = { "Browse", "Search" };
-        private static string[] browseChoices = { "Skill", "Employer" };
-        private static string[] searchChoices = { "Skill", "Employer" };
-
         static void Main(string[] args)
         {
+            // Create two Dictionary vars to hold info for menu and data
+            Dictionary<string, string> actionChoices = new Dictionary<string, string>();
+            actionChoices.Add("search", "Search");
+            actionChoices.Add("list", "List");
+
+            Dictionary<string, string> columnChoices = new Dictionary<string, string>();
+            columnChoices.Add("core competency", "Skill");
+            columnChoices.Add("employer", "Employer");
+            columnChoices.Add("location", "Location");
+            columnChoices.Add("position type", "Position Type");
+            columnChoices.Add("all", "All");
+
             Console.WriteLine("Welcome to LaunchCode's TechJobs App!");
 
-            // Allow user to search/browse until they manually quit with ctrl+c
+            // Allow user to search/list until they manually quit with ctrl+c
             while (true)
             {
 
-                int actionChoice = displayChoiceMenu("View Jobs", actionChoices);
+                string actionChoice = getUserSelection("View Jobs", actionChoices);
 
-                if (actionChoices[actionChoice].Equals("Browse"))
+                if (actionChoice.Equals("list"))
                 {
-                    int browseChoice = displayChoiceMenu("Browse", browseChoices);
+                    string columnChoice = getUserSelection("Browse", columnChoices);
 
-                    if (browseChoices[browseChoice].Equals("Employer"))
+                    if (columnChoice.Equals("all"))
                     {
-                        List<string> allEmployers = JobData.getAllEmployers();
-
-                        Console.WriteLine("\n***All Employers***");
-                        foreach (string employer in allEmployers)
-                        {
-                            Console.WriteLine(employer);
-                        }
+                        printJobs(JobData.findAll());
                     }
                     else
                     {
-                        List<string> allSkills = JobData.getAllSkills();
+                        List<string> results = JobData.findAll(columnChoice);
 
-                        Console.WriteLine("\n***All Skills***");
-                        foreach (string skill in allSkills)
+                        Console.WriteLine("\n*** All " + columnChoices[columnChoice] + " Values ***");
+                        foreach (string item in results)
                         {
-                            Console.WriteLine(skill);
+                            Console.WriteLine(item);
                         }
                     }
                 }
                 else // choice is "search"
                 {
                     // How does the user want to search (e.g. by skill or employer)
-                    int searchChoice = displayChoiceMenu("Search", searchChoices);
+                    string columnChoice = getUserSelection("Search", columnChoices);
 
                     // What is their search term?
                     Console.WriteLine("\nSearch term: ");
@@ -56,46 +58,48 @@ namespace TechJobsConsole
                     List<Dictionary<string, string>> searchResults;
 
                     // Fetch results
-                    if (searchChoices[searchChoice].Equals("Skill"))
+                    if (columnChoice.Equals("all"))
                     {
-                        searchResults = JobData.getJobsBySkill(searchTerm);
+                        Console.WriteLine("Search all fields not yet implemented.");
                     }
                     else
                     {
-                        searchResults = JobData.getJobsByEmployer(searchTerm);
-                    }
-
-                    // Print results
-                    if (searchResults.Count == 0)
-                    {
-                        Console.WriteLine("No results");
-                    }
-                    else
-                    {
+                        searchResults = JobData.findByKeyAndValue(columnChoice, searchTerm);
                         printJobs(searchResults);
                     }
                 }
             }
         }
 
-        private static int displayChoiceMenu(string choiceText, string[] choices)
+        /*
+         * Returns the key of the selected item from the choices Dictionary
+         */
+        private static string getUserSelection(string choiceHeader, Dictionary<string, string> choices)
         {
-            int result;
+            int choiceIdx;
             bool isValidChoice = false;
+            string[] choiceKeys = new string[choices.Count];
+
+            int i = 0;
+            foreach (KeyValuePair<string, string> choice in choices)
+            {
+                choiceKeys[i] = choice.Key;
+                i++;
+            }
 
             do
             {
-                Console.WriteLine("\n" + choiceText + " by:");
+                Console.WriteLine("\n" + choiceHeader + " by:");
 
-                for (int i = 0; i < choices.Length; i++)
+                for (int j = 0; j < choiceKeys.Length; j++)
                 {
-                    Console.WriteLine(i + " - " + choices[i]);
+                    Console.WriteLine(j + " - " + choices[choiceKeys[j]]);
                 }
 
                 string input = Console.ReadLine();
-                result = int.Parse(input);
+                choiceIdx = int.Parse(input);
 
-                if (result < 0 || result >= choices.Length)
+                if (choiceIdx < 0 || choiceIdx >= choiceKeys.Length)
                 {
                     Console.WriteLine("Invalid choices. Try again.");
                 }
@@ -106,22 +110,12 @@ namespace TechJobsConsole
 
             } while (!isValidChoice);
 
-            return result;
+            return choiceKeys[choiceIdx];
         }
 
         private static void printJobs(List<Dictionary<string, string>> someJobs)
         {
-            foreach (Dictionary<string, string> job in someJobs)
-            {
-                string jobString = "\n*****" +
-                        "\nEmployer: " + job["employer"] +
-                        "\nName: " + job["name"] +
-                        "\nDescription: " + job["desc"] +
-                        "\nSkills: " + job["skills"] +
-                        "\n*****";
-
-                Console.WriteLine(jobString);
-            }
+            Console.WriteLine("printJobs is not implemented yet");
         }
     }
 }

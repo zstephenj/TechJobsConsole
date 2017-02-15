@@ -10,52 +10,48 @@ namespace TechJobsConsole
         static List<Dictionary<string, string>> allJobs = new List<Dictionary<string, string>>();
         static bool isDataLoaded = false;
 
-        /*
-         * Fetch list of all employers from loaded data,
-         * without duplicates.
-         */
-        public static List<string> getAllEmployers()
+        public static List<Dictionary<string, string>> findAll()
         {
-
             loadData();
-
-            List<string> employers = new List<string>();
-
-            foreach (Dictionary<string, string> job in allJobs)
-            {
-
-                string anEmployer = job["employer"];
-
-                if (!employers.Contains(anEmployer))
-                {
-                    employers.Add(anEmployer);
-                }
-
-            }
-
-            return employers;
+            return allJobs;
         }
 
         /*
-         * Returns results of search the jobs data by employer, using
-         * inclusion of the search term.
-         *
-         * For example, searching for "Enterprise" will include results
-         * with "Enterprise Holdings, Inc" as the employer.
+         * Returns a list of all values contained in a given column,
+         * without duplicates. 
          */
-        public static List<Dictionary<string, string>> getJobsByEmployer(string employer)
+        public static List<string> findAll(string field)
         {
+            loadData();
+
+            List<string> values = new List<string>();
+
+            foreach (Dictionary<string, string> job in allJobs)
+            {
+                string aValue = job[field];
+
+                if (!values.Contains(aValue))
+                {
+                    values.Add(aValue);
+                }
+            }
+            return values;
+        }
+
+        public static List<Dictionary<string, string>> findByKeyAndValue(string key, string value)
+        {
+            // load data, if not already loaded
             loadData();
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
-            foreach (Dictionary<string, string> job in allJobs)
+            foreach (Dictionary<string, string> row in allJobs)
             {
-                string anEmployer = job["employer"];
+                string aValue = row[key];
 
-                if (anEmployer.Contains(employer))
+                if (aValue.Contains(value))
                 {
-                    jobs.Add(job);
+                    jobs.Add(row);
                 }
             }
 
@@ -63,65 +59,7 @@ namespace TechJobsConsole
         }
 
         /*
-         * Fetch list of all employers from loaded data,
-         * without duplicates.
-         */
-        public static List<string> getAllSkills()
-        {
-
-            loadData();
-
-            List<string> skills = new List<string>();
-
-            foreach (Dictionary<string, string> job in allJobs)
-            {
-                string[] jobSkills = job["skills"].Split(',');
-                foreach (string skill in jobSkills)
-                {
-
-                    // There might be a pace before or after the skill name
-                    string trimmmedSkill = skill.Trim();
-
-                    // Only add the skill if it's not already in the list
-                    if (!skills.Contains(trimmmedSkill))
-                    {
-                        skills.Add(trimmmedSkill);
-                    }
-                }
-
-            }
-
-            return skills;
-        }
-
-        /*
-         * Returns results of search the jobs data by skill, using
-         * inclusion of the search term.
-         *
-         * For example, searching for "HTML" will include results
-         * with "HTML, JS, CSS" in the skills field.
-         */
-        public static List<Dictionary<string, string>> getJobsBySkill(string skill)
-        {
-            loadData();
-
-            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
-
-            foreach (Dictionary<string, string> job in allJobs)
-            {
-                string jobSkills = job["skills"];
-
-                if (jobSkills.Contains(skill))
-                {
-                    jobs.Add(job);
-                }
-            }
-
-            return jobs;
-        }
-
-        /*
-         * Load and parse data from Resrouces/job_data.csv
+         * Load and parse data from job_data.csv
          */
         private static void loadData()
         {
@@ -170,33 +108,38 @@ namespace TechJobsConsole
         /*
          * Parse a single line of a CSV file into a string array
          */
-        private static string[] CSVRowToStringArray(string r, char fieldSep = ',', char stringSep = '\"')
+        private static string[] CSVRowToStringArray(string row, char fieldSeparator = ',', char stringSeparator = '\"')
         {
-            bool bolQuote = false;
-            StringBuilder bld = new StringBuilder();
-            List<string> retAry = new List<string>();
+            bool isBetweenQuotes = false;
+            StringBuilder valueBuilder = new StringBuilder();
+            List<string> rowValues = new List<string>();
 
-            foreach (char c in r.ToCharArray())
+            // Loop through the row string one char at a time
+            foreach (char c in row.ToCharArray())
             {
-                if ((c == fieldSep && !bolQuote))
+                if ((c == fieldSeparator && !isBetweenQuotes))
                 {
-                    retAry.Add(bld.ToString());
-                    bld.Clear();
+                    rowValues.Add(valueBuilder.ToString());
+                    valueBuilder.Clear();
                 }
                 else
                 {
-                    if (c == stringSep)
+                    if (c == stringSeparator)
                     {
-                        bolQuote = !bolQuote;
+                        isBetweenQuotes = !isBetweenQuotes;
                     }
                     else
                     {
-                        bld.Append(c);
+                        valueBuilder.Append(c);
                     }
                 }
             }
 
-            return retAry.ToArray();
+            // Add the final value
+            rowValues.Add(valueBuilder.ToString());
+            valueBuilder.Clear();
+
+            return rowValues.ToArray();
         }
     }
 }
