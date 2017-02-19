@@ -7,26 +7,26 @@ namespace TechJobsConsole
 {
     class JobData
     {
-        static List<Dictionary<string, string>> allJobs = new List<Dictionary<string, string>>();
-        static bool isDataLoaded = false;
+        static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
+        static bool IsDataLoaded = false;
 
-        public static List<Dictionary<string, string>> findAll()
+        public static List<Dictionary<string, string>> FindAll()
         {
-            loadData();
-            return allJobs;
+            LoadData();
+            return AllJobs;
         }
 
         /*
          * Returns a list of all values contained in a given column,
          * without duplicates. 
          */
-        public static List<string> findAll(string column)
+        public static List<string> FindAll(string column)
         {
-            loadData();
+            LoadData();
 
             List<string> values = new List<string>();
 
-            foreach (Dictionary<string, string> job in allJobs)
+            foreach (Dictionary<string, string> job in AllJobs)
             {
                 string aValue = job[column];
 
@@ -38,14 +38,14 @@ namespace TechJobsConsole
             return values;
         }
 
-        public static List<Dictionary<string, string>> findByColumnAndValue(string column, string value)
+        public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
         {
             // load data, if not already loaded
-            loadData();
+            LoadData();
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
-            foreach (Dictionary<string, string> row in allJobs)
+            foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
 
@@ -61,10 +61,10 @@ namespace TechJobsConsole
         /*
          * Load and parse data from job_data.csv
          */
-        private static void loadData()
+        private static void LoadData()
         {
 
-            if (isDataLoaded)
+            if (IsDataLoaded)
             {
                 return;
             }
@@ -96,10 +96,10 @@ namespace TechJobsConsole
                 {
                     rowDict.Add(headers[i], row[i]);
                 }
-                allJobs.Add(rowDict);
+                AllJobs.Add(rowDict);
             }
 
-            isDataLoaded = true;
+            IsDataLoaded = true;
         }
 
         /*
