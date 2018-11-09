@@ -48,6 +48,7 @@ namespace TechJobsConsole
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
+                aValue = aValue.ToLower();
 
                 if (aValue.Contains(value))
                 {
@@ -71,7 +72,7 @@ namespace TechJobsConsole
 
             List<string[]> rows = new List<string[]>();
 
-            using (StreamReader reader = File.OpenText("job_data.csv"))
+            using (StreamReader reader = File.OpenText(@"C:\Users\Work\lc101\TechJobsConsole\TechJobsConsole\src\TechJobsConsole\job_data.csv"))
             {
                 while (reader.Peek() >= 0)
                 {
@@ -96,7 +97,7 @@ namespace TechJobsConsole
                 {
                     rowDict.Add(headers[i], row[i]);
                 }
-                AllJobs.Add(rowDict);
+                AllJobs.Add(rowDict);   
             }
 
             IsDataLoaded = true;
@@ -137,6 +138,31 @@ namespace TechJobsConsole
             valueBuilder.Clear();
 
             return rowValues.ToArray();
+        }
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> row in AllJobs)
+            {
+                string rowData = "";
+
+                foreach (string data in row.Values)
+                {
+                    rowData += data;
+                }
+
+                rowData = rowData.ToLower();
+
+                if (rowData.Contains(value))
+                {
+                    jobs.Add(row);
+                }
+            }
+
+            return jobs;
         }
     }
 }
